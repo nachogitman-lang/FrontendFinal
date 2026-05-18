@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
+import Home from './pages/home';
 import Navegacion from './components/navegacion';
 import Carrito from './pages/cart';
 import Producto from './pages/producto';
