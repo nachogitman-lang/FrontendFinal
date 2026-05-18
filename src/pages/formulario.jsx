@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Form, Button, Alert, Container, Row, Col } from "react-bootstrap";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export default function Formulario() {
     const [formData, setFormData] = useState({
         nombre: "",
@@ -22,7 +24,7 @@ export default function Formulario() {
         setSuccess("");
 
         try {
-            const response = await fetch("http://localhost:5000/api/productos", {
+            const response = await fetch(`${API_BASE_URL}/api/products`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

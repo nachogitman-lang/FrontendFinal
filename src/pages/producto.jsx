@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button, Spinner, Alert } from "react-bootstrap";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export default function Producto() {
     // 1. Estados de tu componente
     const [productos, setProductos] = useState([]);
@@ -11,7 +13,7 @@ export default function Producto() {
     useEffect(() => {
         const cargarProductos = async () => {
             try {
-                const response = await fetch("http://localhost:5000/api/productos");
+                const response = await fetch(`${API_BASE_URL}/api/productos`);
                 
                 if (!response.ok) {
                     throw new Error("No se pudieron cargar los productos");
