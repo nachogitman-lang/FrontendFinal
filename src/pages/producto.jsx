@@ -13,7 +13,7 @@ export default function Producto() {
     useEffect(() => {
         const cargarProductos = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/productos`);
+               const response = await fetch(`${API_BASE_URL}/api/products`);
                 
                 if (!response.ok) {
                     throw new Error("No se pudieron cargar los productos");
