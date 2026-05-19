@@ -12,7 +12,6 @@ export default function Cart() {
         setItems(carritoGuardado);
     }, []);
 
-    // Función para borrar un producto del carrito
     const eliminarItem = (id) => {
         const nuevoCarrito = items.filter(item => item._id !== id);
         setItems(nuevoCarrito);
@@ -25,37 +24,40 @@ export default function Cart() {
     };
 
     // Simulación del botón de pago
-   const gestionarPago = async () => {
-    if (items.length === 0) return;
-
+const gestionarpago = async () => {
     try {
-       
-       const response = await fetch("https://backendfinal-production-1785.up.railway.app/api/checkout/create-preference", {
-         method: "POST",
-         headers: {
-        "Content-Type": "application/json",
-         },
-          body: JSON.stringify({ items: cart }),
-});
+
+        const response = await fetch("https://backendfinal-production-1785.up.railway.app/api/checkout/create-preference", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ items: cart  }),
+        });
+
 
         if (!response.ok) {
-            throw new Error("Error al generar la preferencia de pago");
+
+            const errorData = await response.json().catch(() => ({}));
+            console.error("🔴 Error que devolvió el Backend:", errorData);
+            throw new Error(errorData.message || "Error en la respuesta del servidor");
         }
 
         const data = await response.json();
+        
 
-    
-        localStorage.removeItem("carrito");
-        setItems([]);
+        if (data.id) {
 
-       
-        window.location.href = data.init_point;
+            window.location.href = `https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=${data.id}`;
+        }
 
     } catch (error) {
-        console.error("Error en el proceso de pago:", error);
-        alert("Hubo un problema al conectar con Mercado Pago. Inténtalo de nuevo.");
+        // 👇 ESTO ES LO QUE QUEREMOS VER EN LA CONSOLA DEL NAVEGADOR
+        console.error("❌ ERROR COMPLETO EN EL FRONTEND:", error);
+        alert("Hubo un problema al conectar con Mercado Pago. Mirá la consola.");
     }
 };
+
 
     return (
         <Container className="py-5">
