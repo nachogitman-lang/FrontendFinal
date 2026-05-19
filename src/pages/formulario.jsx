@@ -24,7 +24,7 @@ export default function Formulario() {
         setSuccess("");
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/products`, {
+            const response = await fetch("https://backendfinal-production-1785.up.railway.app/api/productos", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
