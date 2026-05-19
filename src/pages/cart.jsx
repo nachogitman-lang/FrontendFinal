@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Table, Button, Card, Row, Col, Alert } from "react-bootstrap";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 
 export default function Cart() {
     const [items, setItems] = useState([]);
@@ -30,13 +30,13 @@ export default function Cart() {
 
     try {
        
-        const response = await fetch(`${API_BASE_URL}/api/checkout/create-preference`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ items: items }), 
-        });
+       const response = await fetch("https://backendfinal-production-1785.up.railway.app/api/checkout/create-preference", {
+         method: "POST",
+         headers: {
+        "Content-Type": "application/json",
+         },
+          body: JSON.stringify({ items: cart }),
+});
 
         if (!response.ok) {
             throw new Error("Error al generar la preferencia de pago");
