@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Table, Button, Card, Row, Col, Alert } from "react-bootstrap";
 
-
-
 export default function Cart() {
     const [items, setItems] = useState([]);
 
@@ -24,40 +22,36 @@ export default function Cart() {
         return items.reduce((total, item) => total + (item.precio * item.cantidad), 0);
     };
 
-    // Simulación del botón de pago
-const gestionarPago = async () => {
-    try {
+    // Función de pago corregida
+    const gestionarPago = async () => {
+        try {
+            const response = await fetch("https://backendfinal-production-1785.up.railway.app/api/checkout/create-preference", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                // 🛠️ ¡FIXED!: Cambiamos 'cart' por 'items' que es tu variable real del useState
+                body: JSON.stringify({ items: items }), 
+            });
 
-        const response = await fetch("https://backendfinal-production-1785.up.railway.app/api/checkout/create-preference", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ items: cart }), // Mandamos el carrito
-        });
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                console.error("🔴 Error que devolvió el Backend:", errorData);
+                throw new Error(errorData.message || "Error en la respuesta del servidor");
+            }
 
-   
-        if (!response.ok) {
+            const data = await response.json();
+            
+            if (data.id) {
+                // Te redirige directo a Mercado Pago
+                window.location.href = `https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=${data.id}`;
+            }
 
-            const errorData = await response.json().catch(() => ({}));
-            console.error("🔴 Error que devolvió el Backend:", errorData);
-            throw new Error(errorData.message || "Error en la respuesta del servidor");
+        } catch (error) {
+            console.error("❌ ERROR COMPLETO EN EL FRONTEND:", error);
+            alert("Hubo un problema al conectar con Mercado Pago. Mirá la consola.");
         }
-
-        const data = await response.json();
-        
-
-        if (data.id) {
-
-            window.location.href = `https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=${data.id}`;
-        }
-
-    } catch (error) {
-        // 👇 ESTO ES LO QUE QUEREMOS VER EN LA CONSOLA DEL NAVEGADOR
-        console.error("❌ ERROR COMPLETO EN EL FRONTEND:", error);
-        alert("Hubo un problema al conectar con Mercado Pago. Mirá la consola.");
-    }
-};
+    };
 
     return (
         <Container className="py-5">
@@ -67,7 +61,7 @@ const gestionarPago = async () => {
                 <Alert variant="info">Tu carrito está vacío. ¡Ve a la sección de productos para llenarlo!</Alert>
             ) : (
                 <Row>
-   
+                    {/* Tabla de Productos */}
                     <Col lg={8}>
                         <Table responsive striped bordered hover>
                             <thead>
@@ -100,7 +94,7 @@ const gestionarPago = async () => {
                         </Table>
                     </Col>
 
-          
+                    {/* Resumen del Pedido */}
                     <Col lg={4}>
                         <Card className="p-3 shadow-sm border-0" style={{ backgroundColor: "#f8f9fa" }}>
                             <Card.Body>
