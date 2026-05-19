@@ -12,6 +12,7 @@ export default function Cart() {
         setItems(carritoGuardado);
     }, []);
 
+    // Función para borrar un producto del carrito
     const eliminarItem = (id) => {
         const nuevoCarrito = items.filter(item => item._id !== id);
         setItems(nuevoCarrito);
@@ -24,7 +25,7 @@ export default function Cart() {
     };
 
     // Simulación del botón de pago
-const gestionarpago = async () => {
+const gestionarPago = async () => {
     try {
 
         const response = await fetch("https://backendfinal-production-1785.up.railway.app/api/checkout/create-preference", {
@@ -32,10 +33,10 @@ const gestionarpago = async () => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ items: cart  }),
+            body: JSON.stringify({ items: cart }), // Mandamos el carrito
         });
 
-
+   
         if (!response.ok) {
 
             const errorData = await response.json().catch(() => ({}));
@@ -57,7 +58,6 @@ const gestionarpago = async () => {
         alert("Hubo un problema al conectar con Mercado Pago. Mirá la consola.");
     }
 };
-
 
     return (
         <Container className="py-5">
