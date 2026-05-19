@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button, Spinner, Alert } from "react-bootstrap";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const LOCAL_API = "http://localhost:5000/api/productos";
+const PRODUCTION_API = "https://backendfinal-production-1785.up.railway.app/api/productos";
 
 export default function Producto() {
     // 1. Estados de tu componente
@@ -12,24 +13,30 @@ export default function Producto() {
     
     useEffect(() => {
         const cargarProductos = async () => {
-            try {
-               const response = await fetch(`${API_BASE_URL}/api/productos`);
-                
-                if (!response.ok) {
-                    throw new Error("No se pudieron cargar los productos");
-                }
-                
-                const data = await response.json();
-                setProductos(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setCargando(false);
+             try {
+             let response;
+            
+             try {
+                response = await fetch(LOCAL_API);
+            } catch (localError) {
+                response = await fetch(PRODUCTION_API);
             }
-        };
 
-        cargarProductos();
-    }, []);
+            if (!response.ok) {
+                throw new Error("No se pudieron cargar los productos");
+            }
+
+            const data = await response.json();
+            setProductos(data);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setCargando(false);
+        }
+    };
+
+    cargarProductos();
+}, []);
 
     
     const agregarAlCarrito = (producto) => {
